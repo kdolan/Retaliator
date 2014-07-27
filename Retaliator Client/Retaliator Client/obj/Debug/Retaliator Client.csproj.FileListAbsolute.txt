@@ -1,0 +1,14 @@
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\Retaliator Client.exe.config
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\Retaliator Client.exe
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\Retaliator Client.pdb
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\SharpDX.DirectInput.dll
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\SharpDX.dll
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\SharpDX.xml
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\bin\Debug\SharpDX.DirectInput.xml
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator Client.csprojResolveAssemblyReference.cache
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator Client.csproj.ResolveComReference.cache
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator_Client.Properties.Resources.resources
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator Client.csproj.GenerateResource.Cache
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator Client.exe
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator Client.pdb
+C:\Users\Kevin\Google Drive\Projects\Retaliator\Retaliator Client\Retaliator Client\obj\Debug\Retaliator_Client.frm_Primary.resources
