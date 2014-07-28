@@ -60,13 +60,12 @@ void loop()
 	if(MAX_ENABLE>255)
 	{
 		//Do nothing (Blink LED to indicate problem)
-		digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+		digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
   		delay(1000);               // wait for a second
- 		digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+ 		digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
   		delay(1000);      
 	}
 		
-    Serial.println(y);
     //Wait for pi
     boolean piFound = false;
     while(!piFound)
@@ -77,33 +76,48 @@ void loop()
             piFound = true;
     }
     Serial.flush();
-
+    // Allocate some space for the string
+    // Index into array; where to store the character
+    char inData[24];
+    char cmdChar;
+    byte index = 0;
     //Wait for commands
     while(true)
     {
-      char cmdChar;
-      char inData[24]; // Allocate some space for the string
-      byte index = 0; // Index into array; where to store the character
+      index = 0;
+
       //Serial.print(Serial.available());
       //int SerAval=Serial.available();
       if (Serial.available() > 0) 
       {
-        Serial.readBytesUntil('#',inData,24);
+        //Serial.readBytesUntil('#',inData,24);
         //cmdChar = Serial.read(); // Read a character
-        cmdChar = inData[0];
-        Serial.print(cmdChar);
+        delay(15);
         index = 0;
+        Serial.println("--START READING INPUT--:");
+        while(Serial.available() > 0)
+        {
+          inData[index]=Serial.read();
+          Serial.print("Read:");
+          Serial.println(inData[index], DEC);
+          index++;
+        }
+        cmdChar = inData[0];
+        
         if(cmdChar=='D')
-        {          
+        {       
+           Serial.println("--START DATA PRINT");
+           Serial.println(cmdChar, DEC);
+           Serial.println(inData[1], DEC);
+           Serial.println(inData[2], DEC);
+           Serial.println(inData[3], DEC);
+           Serial.println(inData[4], DEC);  
            /*String str_inData = String(inData);
            String str_LF = str_inData.substring(1,4); //Will look at characters 2,3,4
            String str_RF = str_inData.substring(4,7);
            String str_LR = str_inData.substring(7,10);
            String str_RR = str_inData.substring(10,13);*/
            
-           Serial.println();
-           //Serial.println(str_RR);
-           Serial.println();
            //Serial.println(str_LF);Serial.println(str_RF);Serial.println(str_LR);Serial.println(str_RR);
   
            /*int LF = str_LF.toInt();
@@ -112,9 +126,9 @@ void loop()
            int RR = str_RR.toInt();*/
            
            int LF = (100*(inData[2]-'0'))+(10*(inData[3]-'0'))+((inData[4]-'0'));
-           int RF =
-           int LR = 
-           int RR = 
+           int RF = (100*(inData[5]-'0'))+(10*(inData[6]-'0'))+((inData[7]-'0'));
+           int LR = (100*(inData[8]-'0'))+(10*(inData[9]-'0'))+((inData[10]-'0'));
+           int RR = (100*(inData[11]-'0'))+(10*(inData[12]-'0'))+((inData[13]-'0'));
            
            //Serial.println(LF);Serial.println(RF);Serial.println(LR);Serial.println(RR);
            //Serial.print("-->");
@@ -151,12 +165,12 @@ void loop()
            RF = ((float)RF/100.0)*MAX_ENABLE;
            LR = ((float)LR/100.0)*MAX_ENABLE;
            RR = ((float)RR/100.0)*MAX_ENABLE;
-           Serial.println(LF);Serial.println(RF);Serial.println(LR);Serial.println(RR);
+           //Serial.println(LF);Serial.println(RF);Serial.println(LR);Serial.println(RR);
                      
-           setMotor(LF_enbl, LF_in1, LF_in2, LF, rev_LF);
+           /*setMotor(LF_enbl, LF_in1, LF_in2, LF, rev_LF);
            setMotor(RF_enbl, RF_in1, RF_in2, RF, rev_RF);
            setMotor(LR_enbl, LR_in1, LR_in2, LR, rev_LR);
-           setMotor(RR_enbl, RR_in1, RR_in2, RR, rev_RR);
+           setMotor(RR_enbl, RR_in1, RR_in2, RR, rev_RR);*/
         }
       }
     }
