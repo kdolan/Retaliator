@@ -1,9 +1,10 @@
 /*
 Adafruit Arduino - Lesson 15. Bi-directional Motor
 */
- 
-float MAX_MOTOR_V = 7.0; //Defines the max voltage to be be applied to the motors.
-float MOTOR_BAT_V = 9.2; //Defines the voltage of the battery connected to the L293D
+
+//VALUES NOT VERIFIED BY CODE/ARDUINO. USE AT OWN RIST AND TO MAKE ADJUSTMENTS
+float MAX_MOTOR_V = 6.5; //Defines the max voltage to be be applied to the motors.
+float MOTOR_BAT_V = 7.2; //Defines the voltage of the battery connected to the L293D
 
 /*
 The max speed value for the motors. This is determined by (MAX_MOTOR_V/MOTOR_BAT_V)*255.
@@ -13,13 +14,13 @@ will be applied.
 */
 int MAX_ENABLE = 0; 
 
-int RF_enbl = 8;
-int RF_in1 = 30;
-int RF_in2 = 31;
+int RF_enbl = 9;
+int RF_in1 = 31;
+int RF_in2 = 30;
 
 int LF_enbl = 2;
-int LF_in1 = 32;
-int LF_in2 = 33;
+int LF_in1 = 33;
+int LF_in2 = 32;
 
 int LR_enbl = 13;
 int LR_in1 = 40;
@@ -51,21 +52,25 @@ void setup()
   pinMode(RR_in1, OUTPUT);
   pinMode(RR_in2, OUTPUT);
 
+  long previousMillis = 0;
+  long TIMEOUT = 1000; //Mills of no com that motors are halted
   //pinMode(switchPin, INPUT_PULLUP);
 }
  
 void loop()
 {
+    if(MAX_ENABLE>255)
+    {
+      while(true)
+      {
+        //Do nothing (Blink LED to indicate problem)
+        digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
+        delay(1000);               // wait for a second
+        digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
+        delay(1000);      
+      }
+    }
 	
-	if(MAX_ENABLE>255)
-	{
-		//Do nothing (Blink LED to indicate problem)
-		digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-  		delay(1000);               // wait for a second
- 		digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-  		delay(1000);      
-	}
-		
     //Wait for pi
     boolean piFound = false;
     while(!piFound)
@@ -84,51 +89,53 @@ void loop()
     //Wait for commands
     while(true)
     {
+      unsigned long currentMillis = millis();
+    
+      if(currentMillis - previousMillis > TIMEOUT) 
+      {
+          //Comunication with the pi has timed out. Halt the motors
+          previousMillis = currentMillis;  
+          setMotor(LF_enbl, LF_in1, LF_in2, 0, false);
+          setMotor(RF_enbl, RF_in1, RF_in2, 0, false);
+          setMotor(LR_enbl, LR_in1, LR_in2, 0, false);
+          setMotor(RR_enbl, RR_in1, RR_in2, 0, false);
+      }
+    	
       index = 0;
 
       //Serial.print(Serial.available());
       //int SerAval=Serial.available();
       if (Serial.available() > 0) 
       {
+        previousMillis = currentMillis; 
         //Serial.readBytesUntil('#',inData,24);
         //cmdChar = Serial.read(); // Read a character
-        delay(15);
+        delay(25);//Delay to allow all characters into the buffer
         index = 0;
-        Serial.println("--START READING INPUT--:");
+        //Serial.println("--START READING INPUT--:");
         while(Serial.available() > 0)
         {
           inData[index]=Serial.read();
-          Serial.print("Read:");
-          Serial.println(inData[index], DEC);
+          //Serial.print("Read:");
+          //Serial.println(inData[index], DEC);
           index++;
         }
         cmdChar = inData[0];
         
         if(cmdChar=='D')
         {       
-           Serial.println("--START DATA PRINT");
+           /*Serial.println("--START DATA PRINT--");
            Serial.println(cmdChar, DEC);
            Serial.println(inData[1], DEC);
            Serial.println(inData[2], DEC);
            Serial.println(inData[3], DEC);
            Serial.println(inData[4], DEC);  
-           /*String str_inData = String(inData);
-           String str_LF = str_inData.substring(1,4); //Will look at characters 2,3,4
-           String str_RF = str_inData.substring(4,7);
-           String str_LR = str_inData.substring(7,10);
-           String str_RR = str_inData.substring(10,13);*/
+           Serial.println(inData[20], DEC);  */
            
-           //Serial.println(str_LF);Serial.println(str_RF);Serial.println(str_LR);Serial.println(str_RR);
-  
-           /*int LF = str_LF.toInt();
-           int RF = str_RF.toInt();
-           int LR = str_LR.toInt();
-           int RR = str_RR.toInt();*/
-           
-           int LF = (100*(inData[2]-'0'))+(10*(inData[3]-'0'))+((inData[4]-'0'));
-           int RF = (100*(inData[5]-'0'))+(10*(inData[6]-'0'))+((inData[7]-'0'));
-           int LR = (100*(inData[8]-'0'))+(10*(inData[9]-'0'))+((inData[10]-'0'));
-           int RR = (100*(inData[11]-'0'))+(10*(inData[12]-'0'))+((inData[13]-'0'));
+           int LF = (100*(inData[1]-'0'))+(10*(inData[2]-'0'))+((inData[3]-'0'));
+           int RF = (100*(inData[4]-'0'))+(10*(inData[5]-'0'))+((inData[6]-'0'));
+           int LR = (100*(inData[7]-'0'))+(10*(inData[8]-'0'))+((inData[9]-'0'));
+           int RR = (100*(inData[10]-'0'))+(10*(inData[11]-'0'))+((inData[12]-'0'));
            
            //Serial.println(LF);Serial.println(RF);Serial.println(LR);Serial.println(RR);
            //Serial.print("-->");
@@ -165,12 +172,12 @@ void loop()
            RF = ((float)RF/100.0)*MAX_ENABLE;
            LR = ((float)LR/100.0)*MAX_ENABLE;
            RR = ((float)RR/100.0)*MAX_ENABLE;
-           //Serial.println(LF);Serial.println(RF);Serial.println(LR);Serial.println(RR);
+           Serial.println(LF);Serial.println(RF);Serial.println(LR);Serial.println(RR);
                      
-           /*setMotor(LF_enbl, LF_in1, LF_in2, LF, rev_LF);
+           setMotor(LF_enbl, LF_in1, LF_in2, LF, rev_LF);
            setMotor(RF_enbl, RF_in1, RF_in2, RF, rev_RF);
            setMotor(LR_enbl, LR_in1, LR_in2, LR, rev_LR);
-           setMotor(RR_enbl, RR_in1, RR_in2, RR, rev_RR);*/
+           setMotor(RR_enbl, RR_in1, RR_in2, RR, rev_RR);
         }
       }
     }
